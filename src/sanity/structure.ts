@@ -23,20 +23,21 @@ export const structure: StructureResolver = (S) =>
               .child(S.document().schemaType("homePage").documentId("homePage")),
             S.listItem().title("ℹ️ Hakkımızda").id("aboutPage").schemaType("aboutPage")
               .child(S.document().schemaType("aboutPage").documentId("aboutPage")),
+            S.listItem().title("🛠 Hizmetler Sayfası").id("servicesPage").schemaType("servicesPage")
+              .child(S.document().schemaType("servicesPage").documentId("servicesPage")),
+            S.listItem().title("🖼️ Galeri Sayfası").id("galeriPage").schemaType("galeriPage")
+              .child(S.document().schemaType("galeriPage").documentId("galeriPage")),
             S.listItem().title("📬 İletişim").id("contactPage").schemaType("contactPage")
               .child(S.document().schemaType("contactPage").documentId("contactPage")),
-            S.listItem().title("📝 Blog").id("blogPage").schemaType("blogPage")
+            S.listItem().title("📝 Blog Sayfası").id("blogPage").schemaType("blogPage")
               .child(S.document().schemaType("blogPage").documentId("blogPage")),
-            S.listItem().title("🛠 Hizmetler").id("servicesPage").schemaType("servicesPage")
-              .child(S.document().schemaType("servicesPage").documentId("servicesPage")),
-            S.listItem().title("💼 Projeler").id("projectsPage").schemaType("projectsPage")
-              .child(S.document().schemaType("projectsPage").documentId("projectsPage")),
           ])
         ),
       S.divider(),
+      S.documentTypeListItem("service").title("🛠 Hizmetler"),
+      S.divider(),
       S.documentTypeListItem("blogCategory").title("📝 Blog Kategorileri"),
       S.documentTypeListItem("blogPost").title("📝 Blog Yazıları"),
-      S.documentTypeListItem("service").title("🛠 Hizmetler"),
-      S.documentTypeListItem("project").title("💼 Projeler"),
+      S.divider(),
       S.documentTypeListItem("legalPage").title("⚖️ Yasal Sayfalar"),
     ]);

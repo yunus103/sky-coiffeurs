@@ -10,7 +10,7 @@ import { urlForImage } from "@/sanity/lib/image";
  * Thumbnail'e hover edildiğinde tam boyutlu lightbox görselini önceden yükler.
  * Tarayıcı cache'e aldığı için tıklandığında anında açılır.
  */
-function prefetchLightboxImage(image: any) {
+export function prefetchLightboxImage(image: any) {
   if (typeof window === "undefined" || !image?.asset) return;
   try {
     const url = urlForImage(image)
@@ -37,7 +37,57 @@ interface LightboxGalleryProps {
 
 export function LightboxGallery({ images }: LightboxGalleryProps) {
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
+
+  if (!images || images.length === 0) return null;
+
+  return (
+    <>
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-16">
+        {images.map((image, i) => (
+          <div
+            key={i}
+            className="group relative cursor-pointer overflow-hidden rounded-sm aspect-[4/3] bg-backgroundLight"
+            onClick={() => setSelectedImage(i)}
+            onMouseEnter={() => prefetchLightboxImage(image)}
+          >
+            <SanityImage
+              image={image}
+              width={800}
+              height={600}
+              sizes="(max-width: 768px) 50vw, 33vw"
+              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500">
+                <Expand size={24} />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <LightboxModal
+        images={images}
+        startIndex={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
+    </>
+  );
+}
+
+export interface LightboxModalProps {
+  images: any[];
+  startIndex: number | null;
+  onClose: () => void;
+}
+
+export function LightboxModal({ images, startIndex, onClose }: LightboxModalProps) {
+  const [selectedImage, setSelectedImage] = useState<number | null>(startIndex);
   const [direction, setDirection] = useState(0);
+
+  useEffect(() => {
+    setSelectedImage(startIndex);
+  }, [startIndex]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -82,31 +132,6 @@ export function LightboxGallery({ images }: LightboxGalleryProps) {
   if (!images || images.length === 0) return null;
 
   return (
-    <>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-16">
-        {images.map((image, i) => (
-          <div
-            key={i}
-            className="group relative cursor-pointer overflow-hidden rounded-sm aspect-[4/3] bg-backgroundLight"
-            onClick={() => setSelectedImage(i)}
-            onMouseEnter={() => prefetchLightboxImage(image)}
-          >
-            <SanityImage
-              image={image}
-              width={800}
-              height={600}
-              sizes="(max-width: 768px) 50vw, 33vw"
-              className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-            />
-            {/* Hover overlay with icon */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all duration-500 flex items-center justify-center">
-              <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500">
-                <Expand size={24} />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
 
       <AnimatePresence initial={false} custom={direction}>
         {selectedImage !== null && (
@@ -115,7 +140,7 @@ export function LightboxGallery({ images }: LightboxGalleryProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 px-4 md:px-12 backdrop-blur-sm touch-none"
-            onClick={() => setSelectedImage(null)}
+            onClick={onClose}
           >
             {/* Top Bar */}
             <div className="absolute top-0 left-0 right-0 p-6 md:p-10 flex justify-between items-center z-10">
@@ -127,7 +152,7 @@ export function LightboxGallery({ images }: LightboxGalleryProps) {
                 className="w-12 h-12 flex items-center justify-center text-white/50 hover:text-white transition-colors cursor-pointer group"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setSelectedImage(null);
+                  onClose();
                 }}
               >
                 <X
@@ -210,6 +235,5 @@ export function LightboxGallery({ images }: LightboxGalleryProps) {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
   );
 }

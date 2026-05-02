@@ -54,6 +54,23 @@ export const siteSettingsType = defineType({
           rows: 4,
           description: "Google Maps > Paylaş > Haritayı göm > HTML kodunu buraya yapıştır.",
         }),
+        defineField({
+          name: "workingHours",
+          title: "Çalışma Saatleri",
+          type: "array",
+          of: [
+            {
+              type: "object",
+              fields: [
+                defineField({ name: "day", title: "Gün", type: "string", description: "Örn: Pazartesi" }),
+                defineField({ name: "hours", title: "Saat", type: "string", description: "Örn: 09:00–21:00" }),
+              ],
+              preview: {
+                select: { title: "day", subtitle: "hours" }
+              }
+            }
+          ]
+        }),
       ],
     }),
     defineField({ name: "socialLinks", title: "Sosyal Medya Hesapları", type: "array", of: [{ type: "socialLink" }] }),

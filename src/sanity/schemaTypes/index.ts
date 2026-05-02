@@ -8,11 +8,10 @@ import { aboutPageType } from "./singletons/aboutPage";
 import { contactPageType } from "./singletons/contactPage";
 import { blogPageType } from "./singletons/blogPage";
 import { servicesPageType } from "./singletons/servicesPage";
-import { projectsPageType } from "./singletons/projectsPage";
+import { galeriPageType } from "./singletons/galeriPage";
 import { blogPostType } from "./documents/blogPost";
 import { blogCategoryType } from "./documents/blogCategory";
 import { serviceType } from "./documents/service";
-import { projectType } from "./documents/project";
 import { legalPageType } from "./documents/legalPage";
 import { faqType } from "./documents/faq";
 
@@ -29,13 +28,11 @@ export const schemaTypes = [
   contactPageType,
   blogPageType,
   servicesPageType,
-  projectsPageType,
+  galeriPageType,
   // Collections
   blogPostType,
   blogCategoryType,
   serviceType,
-  projectType,
   legalPageType,
   faqType,
 ];
-

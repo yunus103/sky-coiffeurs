@@ -59,8 +59,8 @@ const schema = z.object({
   name: z.string().min(2, "İsim en az 2 karakter olmalı"),
   email: z.string().email("Geçerli bir e-posta girin"),
   phone: z.string().optional(),
-  subject: z.string().optional(),
-  message: z.string().min(10, "Mesaj en az 10 karakter olmalı"),
+  appointmentDate: z.string().optional(),
+  message: z.string().min(10, "Not en az 10 karakter olmalı"),
   honeypot: z.string().max(0), // Bot tuzağı — dolu gelirse spam
 });
 
@@ -101,13 +101,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: result.error.flatten().fieldErrors }, { status: 400 });
   }
 
-  const { name, email, phone, subject, message } = result.data;
+  const { name, email, phone, appointmentDate, message } = result.data;
 
   // 5. XSS koruması — mail şablonuna giren tüm değerleri escape et
   const safeName = escapeHtml(name);
   const safeEmail = escapeHtml(email);
   const safePhone = phone ? escapeHtml(phone) : null;
-  const safeSubject = subject ? escapeHtml(subject) : null;
+  const safeDate = appointmentDate ? escapeHtml(appointmentDate) : null;
   const safeMessage = escapeHtml(message).replace(/\n/g, "<br/>");
 
   // 6. Mail gönderimi
@@ -121,16 +121,16 @@ export async function POST(request: NextRequest) {
   try {
     // Siteye bildirim maili
     await transporter.sendMail({
-      from: `"Site İletişim Formu" <${process.env.SMTP_USER}>`,
+      from: `"Site Randevu Formu" <${process.env.SMTP_USER}>`,
       to: process.env.CONTACT_FORM_TO,
-      subject: `Yeni Mesaj: ${safeSubject || safeName}`,
+      subject: `Yeni Randevu Talebi: ${safeName}`,
       html: `
-        <h2>Yeni Form Mesajı</h2>
+        <h2>Yeni Randevu Talebi</h2>
         <p><strong>İsim:</strong> ${safeName}</p>
         <p><strong>E-posta:</strong> ${safeEmail}</p>
         ${safePhone ? `<p><strong>Telefon:</strong> ${safePhone}</p>` : ""}
-        ${safeSubject ? `<p><strong>Konu:</strong> ${safeSubject}</p>` : ""}
-        <p><strong>Mesaj:</strong></p>
+        ${safeDate ? `<p><strong>Tercih Edilen Tarih:</strong> ${safeDate}</p>` : ""}
+        <p><strong>Not / İstek:</strong></p>
         <p>${safeMessage}</p>
       `,
     });

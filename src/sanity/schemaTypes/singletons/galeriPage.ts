@@ -26,19 +26,25 @@ export const galeriPageType = defineType({
               type: "string",
               options: {
                 list: [
-                  { title: "Erkek", value: "men" },
                   { title: "Kadın", value: "women" },
-                  { title: "Genel", value: "general" },
+                  { title: "Erkek", value: "men" },
                 ],
                 layout: "radio",
               },
-              initialValue: "general",
+              description: "Kategori seçilmezse 'Genel' olarak kabul edilir.",
             }),
             defineField({
               name: "featured",
               title: "Ana Sayfada Göster",
               type: "boolean",
               initialValue: false,
+            }),
+            defineField({
+              name: "relatedService",
+              title: "İlgili Hizmet",
+              type: "reference",
+              to: [{ type: "service" }],
+              description: "Bu fotoğrafın hangi hizmetle ilgili olduğunu seçin (Opsiyonel).",
             }),
           ],
           preview: {

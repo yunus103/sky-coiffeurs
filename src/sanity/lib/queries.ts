@@ -39,8 +39,15 @@ export const homePageQuery = groq`*[_type == "homePage"][0] {
 
 // ─── Hakkımızda ───────────────────────────────────────────────────────────────
 export const aboutPageQuery = groq`*[_type == "aboutPage"][0] {
-  pageTitle, pageSubtitle, body,
-  mainImage ${imageFragment},
+  pageTitle, pageSubtitle,
+  heroImage ${imageFragment},
+  storyTitle, storyText,
+  storyImage ${imageFragment},
+  valuesTitle,
+  values[] { title, description },
+  ownerTitle, ownerName, ownerRole, ownerBio,
+  ownerPhoto ${imageFragment},
+  ctaLabel, ctaHref,
   seo
 }`;
 
@@ -84,7 +91,9 @@ export const blogRelatedPostsQuery = groq`*[_type == "blogPost" && category._ref
 
 // ─── Hizmetler ────────────────────────────────────────────────────────────────
 export const servicesPageQuery = groq`*[_type == "servicesPage"][0] {
-  pageTitle, pageSubtitle, headerImage ${imageFragment}, seo
+  pageTitle, pageSubtitle, introText,
+  headerImage ${imageFragment},
+  seo
 }`;
 
 export const serviceListQuery = groq`*[_type == "service"] | order(order asc, _createdAt asc) {
@@ -107,6 +116,7 @@ export const galeriPageQuery = groq`*[_type == "galeriPage"][0] {
   pageTitle, pageSubtitle, seo,
   images[] {
     _key, title, category, featured,
+    "relatedService": relatedService->{ _id, title },
     "image": {
       "asset": asset->{ _id, url, metadata { lqip, dimensions } },
       "alt": alt,
@@ -118,6 +128,7 @@ export const galeriPageQuery = groq`*[_type == "galeriPage"][0] {
 
 export const galleryItemsQuery = groq`*[_type == "galeriPage"][0].images[] {
   _key, title, category, featured,
+  "relatedService": relatedService->{ _id, title },
   "image": {
     "asset": asset->{ _id, url, metadata { lqip, dimensions } },
     "alt": alt,

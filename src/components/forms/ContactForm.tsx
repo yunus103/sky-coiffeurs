@@ -11,8 +11,8 @@ const schema = z.object({
   name: z.string().min(2, "İsim en az 2 karakter olmalı"),
   email: z.string().email("Geçerli bir e-posta girin"),
   phone: z.string().optional(),
-  subject: z.string().optional(),
-  message: z.string().min(10, "Mesaj en az 10 karakter olmalı"),
+  appointmentDate: z.string().optional(),
+  message: z.string().min(10, "Not en az 10 karakter olmalı"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -25,8 +25,8 @@ type ContactFormProps = {
 };
 
 export function ContactForm({
-  formTitle = "Bize Ulaşın",
-  successMessage = "Mesajınız alındı. En kısa sürede size dönüş yapacağız.",
+  formTitle = "Randevu Talep Et",
+  successMessage = "Randevu talebiniz alındı. En kısa sürede size dönüş yapacağız.",
 }: ContactFormProps) {
   const [status, setStatus] = useState<Status>("idle");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -34,7 +34,7 @@ export function ContactForm({
     name: "",
     email: "",
     phone: "",
-    subject: "",
+    appointmentDate: "",
     message: "",
   });
 
@@ -43,7 +43,6 @@ export function ContactForm({
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Alan hatasını temizle
     if (fieldErrors[name as keyof FormData]) {
       setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
     }
@@ -54,7 +53,6 @@ export function ContactForm({
     setStatus("loading");
     setFieldErrors({});
 
-    // Client-side validasyon
     const result = schema.safeParse(formData);
     if (!result.success) {
       setFieldErrors(result.error.flatten().fieldErrors as FieldErrors);
@@ -62,7 +60,6 @@ export function ContactForm({
       return;
     }
 
-    // Honeypot alanını al
     const form = e.currentTarget;
     const honeypot = (form.elements.namedItem("website") as HTMLInputElement)?.value || "";
 
@@ -89,25 +86,35 @@ export function ContactForm({
 
   if (status === "success") {
     return (
-      <div className="rounded-lg border bg-card p-8 text-center">
-        <div className="text-4xl mb-4">✅</div>
-        <p className="text-lg font-medium">{successMessage}</p>
+      <div className="py-16 text-center space-y-4">
+        <div className="w-16 h-16 border border-primary flex items-center justify-center mx-auto">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-primary">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
+        </div>
+        <p className="font-serif text-2xl font-light text-foreground">{successMessage}</p>
+        <p className="font-sans text-sm text-muted-foreground">En kısa sürede sizinle iletişime geçeceğiz.</p>
       </div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-      {formTitle && <h2 className="text-2xl font-bold">{formTitle}</h2>}
+      {formTitle && (
+        <h2 className="font-serif text-3xl font-light text-foreground mb-8">{formTitle}</h2>
+      )}
 
-      {/* Honeypot — spam botları için gizli alan */}
+      {/* Honeypot */}
       <div className="absolute opacity-0 pointer-events-none h-0 overflow-hidden" aria-hidden="true">
         <input name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {/* Ad Soyad + Telefon */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div className="space-y-2">
-          <Label htmlFor="name">Ad Soyad *</Label>
+          <Label htmlFor="name" className="font-sans text-[10px] tracking-widest uppercase text-muted-foreground">
+            Ad Soyad <span className="text-destructive">*</span>
+          </Label>
           <Input
             id="name"
             name="name"
@@ -115,14 +122,35 @@ export function ContactForm({
             onChange={handleChange}
             placeholder="Adınız Soyadınız"
             aria-invalid={!!fieldErrors.name}
+            className="rounded-none border-border focus-visible:ring-0 focus-visible:border-primary"
           />
           {fieldErrors.name && (
-            <p className="text-sm text-destructive">{fieldErrors.name[0]}</p>
+            <p className="text-xs text-destructive">{fieldErrors.name[0]}</p>
           )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email">E-posta *</Label>
+          <Label htmlFor="phone" className="font-sans text-[10px] tracking-widest uppercase text-muted-foreground">
+            Telefon
+          </Label>
+          <Input
+            id="phone"
+            name="phone"
+            type="tel"
+            value={formData.phone}
+            onChange={handleChange}
+            placeholder="+90 5__ ___ __ __"
+            className="rounded-none border-border focus-visible:ring-0 focus-visible:border-primary"
+          />
+        </div>
+      </div>
+
+      {/* E-posta + Tarih */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div className="space-y-2">
+          <Label htmlFor="email" className="font-sans text-[10px] tracking-widest uppercase text-muted-foreground">
+            E-posta <span className="text-destructive">*</span>
+          </Label>
           <Input
             id="email"
             name="email"
@@ -131,51 +159,46 @@ export function ContactForm({
             onChange={handleChange}
             placeholder="ornek@mail.com"
             aria-invalid={!!fieldErrors.email}
+            className="rounded-none border-border focus-visible:ring-0 focus-visible:border-primary"
           />
           {fieldErrors.email && (
-            <p className="text-sm text-destructive">{fieldErrors.email[0]}</p>
+            <p className="text-xs text-destructive">{fieldErrors.email[0]}</p>
           )}
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="phone">Telefon</Label>
-          <Input
-            id="phone"
-            name="phone"
-            type="tel"
-            value={formData.phone}
-            onChange={handleChange}
-            placeholder="+90 555 000 00 00"
-          />
-        </div>
 
         <div className="space-y-2">
-          <Label htmlFor="subject">Konu</Label>
+          <Label htmlFor="appointmentDate" className="font-sans text-[10px] tracking-widest uppercase text-muted-foreground">
+            Tercih Edilen Tarih
+          </Label>
           <Input
-            id="subject"
-            name="subject"
-            value={formData.subject}
+            id="appointmentDate"
+            name="appointmentDate"
+            type="date"
+            value={formData.appointmentDate}
             onChange={handleChange}
-            placeholder="Mesajınızın konusu"
+            min={new Date().toISOString().split("T")[0]}
+            className="rounded-none border-border focus-visible:ring-0 focus-visible:border-primary"
           />
         </div>
       </div>
 
+      {/* Not / İstek */}
       <div className="space-y-2">
-        <Label htmlFor="message">Mesaj *</Label>
+        <Label htmlFor="message" className="font-sans text-[10px] tracking-widest uppercase text-muted-foreground">
+          Not / İstek <span className="text-destructive">*</span>
+        </Label>
         <Textarea
           id="message"
           name="message"
           value={formData.message}
           onChange={handleChange}
-          placeholder="Mesajınızı buraya yazın..."
-          rows={6}
+          placeholder="Hangi hizmeti talep ediyorsunuz? Varsa özel isteklerinizi yazabilirsiniz."
+          rows={5}
           aria-invalid={!!fieldErrors.message}
+          className="rounded-none border-border focus-visible:ring-0 focus-visible:border-primary resize-none"
         />
         {fieldErrors.message && (
-          <p className="text-sm text-destructive">{fieldErrors.message[0]}</p>
+          <p className="text-xs text-destructive">{fieldErrors.message[0]}</p>
         )}
       </div>
 
@@ -185,8 +208,12 @@ export function ContactForm({
         </p>
       )}
 
-      <Button type="submit" disabled={status === "loading"} className="w-full sm:w-auto">
-        {status === "loading" ? "Gönderiliyor..." : "Gönder"}
+      <Button
+        type="submit"
+        disabled={status === "loading"}
+        className="w-full rounded-none bg-primary text-primary-foreground hover:bg-primary/85 text-[10px] tracking-[0.3em] uppercase py-6 transition-all duration-300"
+      >
+        {status === "loading" ? "Gönderiliyor..." : "Randevu Talep Et"}
       </Button>
     </form>
   );

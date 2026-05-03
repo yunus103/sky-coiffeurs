@@ -134,12 +134,11 @@ export function ServicesSection({ services, sectionTitle }: Props) {
                   transition={{ delay: i * 0.06 }}
                   onMouseEnter={() => setHoveredId(service._id)}
                   onMouseLeave={() => setHoveredId(null)}
-                  onClick={() => setHoveredId(service._id)}
-                  className="group py-4 cursor-pointer"
+                  className="group py-4"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-serif text-xl font-light text-foreground group-hover:text-primary transition-colors duration-300">
+                      <h3 className="font-serif text-xl font-light text-foreground">
                         {service.title}
                       </h3>
                       {service.shortDescription && (
@@ -148,10 +147,6 @@ export function ServicesSection({ services, sectionTitle }: Props) {
                         </p>
                       )}
                     </div>
-                    <RiArrowRightLine
-                      size={16}
-                      className="text-muted-foreground group-hover:text-secondary group-hover:translate-x-1 transition-all duration-300 shrink-0 ml-4"
-                    />
                   </div>
                 </motion.div>
               ))}

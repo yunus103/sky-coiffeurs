@@ -7,14 +7,18 @@ import { SanityImage } from "@/components/ui/SanityImage";
 import { LightboxModal, prefetchLightboxImage } from "@/components/ui/Lightbox";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { cn } from "@/lib/utils";
-import { RiExpandLeftLine, RiArrowRightLine } from "react-icons/ri";
+import { RiExpandLeftLine, RiArrowRightLine, RiScissors2Line } from "react-icons/ri";
 
 interface GalleryItem {
   _key?: string;
-  title: string;
+  title?: string;
   image: any;
-  category: "men" | "women" | "general";
+  category?: "men" | "women";
   featured?: boolean;
+  relatedService?: {
+    _id: string;
+    title: string;
+  };
 }
 
 interface Props {
@@ -24,9 +28,8 @@ interface Props {
   ctaLabel?: string;
 }
 
-// Bento cell classes: 8 items in editorial asymmetric grid
 const BENTO_CLASSES = [
-  "bento-1", // big left, tall
+  "bento-1",
   "bento-2",
   "bento-3",
   "bento-4",
@@ -41,7 +44,6 @@ export function GalleryBento({ items, sectionTitle, sectionSubtitle, ctaLabel }:
   const [startIndex, setStartIndex] = useState(0);
 
   const displayItems = items?.length ? items.slice(0, 8) : [];
-  const images = displayItems.map((i) => i.image).filter(Boolean);
 
   const open = (idx: number) => {
     setStartIndex(idx);
@@ -103,26 +105,36 @@ export function GalleryBento({ items, sectionTitle, sectionSubtitle, ctaLabel }:
                   )}
 
                   {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 flex items-end justify-end p-4">
-                    <div className="opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-400">
-                      <div className="w-9 h-9 border border-white/60 flex items-center justify-center text-white backdrop-blur-sm">
-                        <RiExpandLeftLine size={14} />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all duration-500 flex flex-col items-center justify-center p-4">
+                    <div className="opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100 transition-all duration-400 mb-2">
+                      <div className="w-10 h-10 border border-white/60 flex items-center justify-center text-white backdrop-blur-sm">
+                        <RiExpandLeftLine size={16} />
                       </div>
                     </div>
+
+                    {item.relatedService && (
+                      <div className="opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500 text-center">
+                        <span className="inline-flex items-center gap-1.5 font-sans text-[8px] tracking-[0.15em] uppercase text-white bg-secondary/80 px-2 py-1 backdrop-blur-sm">
+                          <RiScissors2Line size={10} />
+                          {item.relatedService.title}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Category badge */}
-                  <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <span className="bg-secondary/90 text-secondary-foreground text-[9px] font-sans tracking-widest uppercase px-2 py-1">
-                      {item.category === "men" ? "Erkek" : item.category === "women" ? "Kadın" : "Genel"}
-                    </span>
-                  </div>
+                  {item.category && (
+                    <div className="absolute top-3 left-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      <span className="bg-white/10 text-white text-[9px] font-sans tracking-widest uppercase px-2 py-1 backdrop-blur-md border border-white/10">
+                        {item.category === "men" ? "Erkek" : "Kadın"}
+                      </span>
+                    </div>
+                  )}
                 </motion.div>
               ))}
             </div>
           </FadeIn>
         ) : (
-          /* Placeholder when no gallery items */
           <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="bg-background aspect-square flex items-center justify-center">
@@ -134,7 +146,7 @@ export function GalleryBento({ items, sectionTitle, sectionSubtitle, ctaLabel }:
 
         {/* Lightbox */}
         <LightboxModal 
-          images={images} 
+          items={displayItems} 
           startIndex={lightboxOpen ? startIndex : null} 
           onClose={() => setLightboxOpen(false)} 
         />

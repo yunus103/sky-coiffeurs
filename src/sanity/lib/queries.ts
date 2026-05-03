@@ -142,6 +142,7 @@ export const galleryPreviewQuery = groq`(
   *[_type == "galeriPage"][0].images[featured != true]
 )[0...8] {
   _key, title, category, featured,
+  "relatedService": relatedService->{ _id, title },
   "image": {
     "asset": asset->{ _id, url, metadata { lqip, dimensions } },
     "alt": alt,

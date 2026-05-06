@@ -4,6 +4,7 @@ import { blogListQuery, blogCategoriesQuery, blogPageQuery } from "@/sanity/lib/
 import { buildMetadata } from "@/lib/seo";
 import { FadeIn } from "@/components/ui/FadeIn";
 import { BlogFilter } from "@/components/blog/BlogFilter";
+import { JsonLd, blogListJsonLd } from "@/components/seo/JsonLd";
 
 export async function generateMetadata(): Promise<Metadata> {
   const pageData = await client.fetch(blogPageQuery, {}, { next: { tags: ["blogPage"] } });
@@ -23,7 +24,9 @@ export default async function BlogListPage() {
   ]);
 
   return (
-    <div className="container mx-auto px-4 py-16">
+    <>
+      <JsonLd data={blogListJsonLd(posts ?? [])} />
+      <div className="container mx-auto px-4 py-16">
       <FadeIn direction="up">
         <h1 className="text-4xl font-bold mb-4">{pageData?.pageTitle || "Blog"}</h1>
         <p className="text-muted-foreground mb-8">{pageData?.pageSubtitle || "Yazılar, güncellemeler ve haberler."}</p>
@@ -31,5 +34,6 @@ export default async function BlogListPage() {
 
       <BlogFilter posts={posts} categories={categories} />
     </div>
+    </>
   );
 }

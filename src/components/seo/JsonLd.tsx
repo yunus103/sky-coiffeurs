@@ -52,7 +52,22 @@ export function articleJsonLd(post: any) {
     "@type": "Article",
     headline: post?.title,
     datePublished: post?.publishedAt,
-    url: `${getSiteUrl()}/blog/${post?.slug?.current}`,
+    url: `${getSiteUrl()}/${post?.slug?.current}`,
+  };
+}
+
+export function blogListJsonLd(posts: any[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "Sky Coiffeurs Blog",
+    url: `${getSiteUrl()}/blog`,
+    blogPost: (posts ?? []).map((post: any) => ({
+      "@type": "BlogPosting",
+      headline: post.title,
+      url: `${getSiteUrl()}/${post.slug?.current}`,
+      datePublished: post.publishedAt,
+    })),
   };
 }
 

@@ -12,6 +12,6 @@ export function formatDate(dateString: string, locale = "tr-TR"): string {
 }
 
 export function getSiteUrl(): string {
-  const url = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const url = process.env.NEXT_PUBLIC_SITE_URL || "https://skycoiffeur.com";
   return url.replace(/\/$/, "");
 }

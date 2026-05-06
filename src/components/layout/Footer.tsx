@@ -155,12 +155,15 @@ export function Footer({ settings, navigation }: { settings: any; navigation: an
           <p className="text-xs text-background/30 font-sans">
             © {currentYear} {settings?.siteName ?? "Sky Coiffeurs"}. Tüm hakları saklıdır.
           </p>
-          <div className="flex gap-6">
-            <Link href="/yasal/gizlilik-politikasi" className="text-xs text-background/30 hover:text-secondary transition-colors font-sans">
-              Gizlilik Politikası
-            </Link>
-            <Link href="/yasal/kullanim-kosullari" className="text-xs text-background/30 hover:text-secondary transition-colors font-sans">
-              Kullanım Koşulları
+          <div className="flex gap-1 items-center">
+            <span className="text-xs text-background/30 font-sans">Tasarım ve Geliştirme:</span>
+            <Link 
+              href="https://sedminadijital.com/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-xs text-background/30 hover:text-secondary transition-colors font-sans"
+            >
+              Sedmina Dijital
             </Link>
           </div>
         </div>

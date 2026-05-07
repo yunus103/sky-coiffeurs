@@ -80,7 +80,6 @@ export const homePageType = defineType({
             defineField({ name: "rating", title: "Puan (1-5)", type: "number", validation: (Rule) => Rule.required().min(1).max(5), initialValue: 5 }),
             defineField({ name: "text", title: "Yorum Metni", type: "text", rows: 3, validation: (Rule) => Rule.required() }),
             defineField({ name: "date", title: "Tarih", type: "string", description: 'Örn: "Nisan 2025"' }),
-            defineField({ name: "avatar", title: "Profil Fotoğrafı (opsiyonel)", type: "image", options: { hotspot: true } }),
           ],
           preview: { select: { title: "name", subtitle: "text" } },
         },

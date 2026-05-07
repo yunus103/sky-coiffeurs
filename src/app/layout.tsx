@@ -9,13 +9,14 @@ import { ScrollToTop } from "@/components/layout/ScrollToTop";
 
 const inter = Inter({
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
   variable: "--font-inter",
   display: "swap",
 });
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500"],
   variable: "--font-cormorant",
   display: "swap",
 });
@@ -29,6 +30,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang="tr" className={`${inter.variable} ${cormorant.variable}`} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://cdn.sanity.io" />
+        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+      </head>
       <body>
         {settings?.gtmId && <GoogleTagManager gtmId={settings.gtmId} />}
         {settings?.gaId && <GoogleAnalytics gaId={settings.gaId} />}

@@ -38,6 +38,8 @@ type SanityImageProps = {
    * @default false
    */
   noBlur?: boolean;
+  fetchPriority?: "high" | "low" | "auto";
+  decoding?: "async" | "sync" | "auto";
 };
 
 export function SanityImage({
@@ -52,6 +54,8 @@ export function SanityImage({
   objectFit,
   quality = 75,
   noBlur = false,
+  fetchPriority,
+  decoding,
 }: SanityImageProps) {
   if (!image?.asset) return null;
 
@@ -114,6 +118,8 @@ export function SanityImage({
       }}
       placeholder={blurDataURL ? "blur" : "empty"}
       blurDataURL={blurDataURL}
+      {...(fetchPriority && { fetchPriority })}
+      {...(decoding && { decoding })}
     />
   );
 }

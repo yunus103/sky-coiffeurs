@@ -73,10 +73,12 @@ export function HeroSection({ data }: { data: HeroData | null }) {
                 <SanityImage
                   image={img}
                   fill
-                  sizes="100vw"
+                  sizes="(max-width: 768px) 100vw, 100vw"
                   className="object-cover"
                   priority={i === 0}
                   noBlur={i === 0}
+                  fetchPriority={i === 0 ? "high" : "auto"}
+                  decoding={i === 0 ? "sync" : "async"}
                 />
               </div>
             </div>
@@ -95,14 +97,11 @@ export function HeroSection({ data }: { data: HeroData | null }) {
       <div className="relative z-10 h-full flex flex-col justify-end px-8 md:px-16 lg:px-24 pb-24 md:pb-32">
         <div className="max-w-2xl">
           {/* Eyebrow */}
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+          <p
             className="text-secondary font-sans text-[10px] tracking-[0.5em] uppercase mb-6"
           >
             {eyebrow}
-          </motion.p>
+          </p>
 
           {/* Gold divider */}
           <motion.div
@@ -113,16 +112,13 @@ export function HeroSection({ data }: { data: HeroData | null }) {
           />
 
           {/* Title */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.5 }}
+          <h1
             className="font-serif text-5xl md:text-7xl lg:text-8xl text-white font-light leading-[0.92] mb-8 drop-shadow-md"
           >
             {titleLines.map((line, i) => (
               <span key={i} className="block">{line}</span>
             ))}
-          </motion.h1>
+          </h1>
 
           {/* Subtitle */}
           <motion.p

@@ -77,6 +77,7 @@ export function Header({ settings, navigation }: { settings: any; navigation: an
           href="/" 
           className="flex items-center justify-center lg:absolute lg:left-1/2 lg:-translate-x-1/2 mt-2 md:mt-3 mb-2 md:mb-3"
           style={{ transform: "rotate(2.2deg)" }}
+          aria-label={settings?.siteName ? `${settings.siteName} Ana Sayfa` : "Ana Sayfa"}
         >
           <div className="relative flex items-center justify-center h-16 w-40 md:h-[70px] md:w-48">
             {settings?.logo ? (

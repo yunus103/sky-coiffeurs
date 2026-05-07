@@ -12,6 +12,10 @@ export function formatDate(dateString: string, locale = "tr-TR"): string {
 }
 
 export function getSiteUrl(): string {
-  const url = process.env.NEXT_PUBLIC_SITE_URL || "https://skycoiffeur.com";
+  let url = process.env.NEXT_PUBLIC_SITE_URL || "https://skycoiffeur.com";
+  // Protocol kontrolü: Eğer protokol yoksa https:// ekle
+  if (!url.startsWith("http")) {
+    url = `https://${url}`;
+  }
   return url.replace(/\/$/, "");
 }

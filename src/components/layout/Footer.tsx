@@ -32,7 +32,11 @@ export function Footer({ settings, navigation }: { settings: any; navigation: an
 
           {/* Kolon 1: Marka & Logo */}
           <div className="space-y-6 lg:col-span-1">
-            <Link href="/" className="inline-block relative">
+            <Link 
+              href="/" 
+              className="inline-block relative"
+              aria-label={settings?.siteName ? `${settings.siteName} Ana Sayfa` : "Ana Sayfa"}
+            >
               {settings?.logo ? (
                 <div className="relative h-24 w-24 sm:h-32 sm:w-32">
                   <SanityImage

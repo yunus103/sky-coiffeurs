@@ -53,9 +53,15 @@ export async function buildMetadata(params: BuildMetadataParams = {}): Promise<M
   const description = params.pageSeo?.metaDescription || params.description || defaults?.description;
   const ogImageSource = params.pageSeo?.ogImage || params.ogImage || defaults?.ogImage;
   const siteUrl = getSiteUrl();
-  const canonicalUrl =
-    params.pageSeo?.canonicalUrl ||
-    (params.canonicalPath ? `${siteUrl}${params.canonicalPath}` : undefined);
+  
+  // Canonical URL hazırlığı: Her zaman protokol içeren mutlak URL olmalı
+  let canonicalUrl = params.pageSeo?.canonicalUrl || 
+                    (params.canonicalPath ? `${siteUrl}${params.canonicalPath}` : undefined);
+  
+  if (canonicalUrl && !canonicalUrl.startsWith("http")) {
+    canonicalUrl = `${siteUrl}${canonicalUrl.startsWith("/") ? "" : "/"}${canonicalUrl}`;
+  }
+
   const noIndex = params.pageSeo?.noIndex || params.noIndex || false;
 
   const faviconUrl = defaults?.favicon?.asset?.url || "/favicon.ico";
@@ -64,6 +70,7 @@ export async function buildMetadata(params: BuildMetadataParams = {}): Promise<M
     : undefined;
 
   return {
+    metadataBase: new URL(siteUrl),
     title,
     description,
     icons: {
